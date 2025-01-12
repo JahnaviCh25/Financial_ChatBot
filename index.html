@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Financial Analysis Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        #chatbox {
+            width: 400px;
+            height: 300px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+        #userInput {
+            width: 300px;
+            padding: 5px;
+        }
+        button {
+            padding: 5px 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Financial Analysis Chatbot</h1>
+    <div id="chatbox">
+        <p><strong>Chatbot:</strong> Welcome! Ask me a financial question.</p>
+    </div>
+    <input type="text" id="userInput" placeholder="Type your question here...">
+    <button onclick="sendQuery()">Send</button>
+
+    <script>
+        async function sendQuery() {
+            const userInput = document.getElementById('userInput').value;
+            if (!userInput) return;
+
+            // Add user's question to the chatbox
+            const chatbox = document.getElementById('chatbox');
+            chatbox.innerHTML += `<p><strong>You:</strong> ${userInput}</p>`;
+
+            // Send the question to the Flask backend
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: userInput })
+            });
+            const data = await response.json();
+
+            // Add chatbot's response to the chatbox
+            chatbox.innerHTML += `<p><strong>Chatbot:</strong> ${data.response}</p>`;
+
+            // Clear the input field
+            document.getElementById('userInput').value = '';
+
+            // Scroll to the bottom of the chatbox
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+    </script>
+</body>
+</html>
